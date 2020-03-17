@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Coding Standards">
+	<!-- See https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml -->
+	<!-- See https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/blob/develop/WordPress-Core/ruleset.xml -->
+
+	<!-- Set a description for this ruleset. -->
+	<description>A custom set of code standard rules to check for WordPress themes and plugins.</description>
+
+	<!-- Exclude paths -->
+	<exclude-pattern>assets/</exclude-pattern>
+	<exclude-pattern>src/</exclude-pattern>
+	<exclude-pattern>images/</exclude-pattern>
+	<exclude-pattern>languages/</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/css/*</exclude-pattern>
+	<exclude-pattern>*/js/*</exclude-pattern>
+	<exclude-pattern>*/style.css</exclude-pattern>
+	<exclude-pattern>webpack.config.js</exclude-pattern>
+
+	<!-- Configs -->
+	<config name="minimum_supported_wp_version" value="5.6" />
+	<config name="testVersion" value="7.3-" />
+
+	<!-- PHPCompatibility -->
+	<rule ref="PHPCompatibilityWP">
+		<exclude-pattern>tests/</exclude-pattern>
+	</rule>
+
+	<!-- Text Domain -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="el-widget-manager"/>
+		</properties>
+	</rule>
+
+	<!-- Include the WordPress ruleset, with exclusions. -->
+	<rule ref="WordPress">
+		
+	</rule>
+</ruleset>

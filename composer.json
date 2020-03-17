@@ -1,0 +1,36 @@
+{
+	"name": "ideabox/elementor-widget-manager",
+	"description": "",
+    "authors": [
+        {
+            "name": "IdeaBox",
+            "email": "hello@ideaboxcreatins.com"
+        }
+    ],
+	"require": {},
+	"require-dev": {
+		"squizlabs/php_codesniffer": "^3.5",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.6.2",
+		"wp-coding-standards/wpcs": "^2.2",
+		"phpcompatibility/phpcompatibility-wp": "^2.1"
+	},
+	"scripts": {
+		"phpcsi": [
+			"phpcs -i"
+		],
+		"phpcs": [
+			"phpcs -s -p ."
+		],
+		"phpcbf": [
+			"phpcbf -p ."
+		],
+		"phpcsv": "phpcs --version"
+	},
+	"extra": {
+		"script-description": {
+			"phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
+			"phpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier",
+			"phpcsi": "List of all the coding standered default as well as custom"
+		}
+	}
+}
