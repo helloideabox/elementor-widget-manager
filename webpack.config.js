@@ -1,5 +1,6 @@
 const path = require( 'path' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+const webpack = require( 'webpack' );
 
 const config = {
 	// Entry point.
@@ -18,10 +19,11 @@ const config = {
 		contentBase: './build',
 	},
 
+	// Setting mode for webpack.
+	mode: 'development',
+
 	// Setting rules for modules.
 	module: {
-		// Setting mode for webpack.
-		mode: 'development',
 		rules: [
 			{
 				test: /\.js$/,
@@ -30,9 +32,11 @@ const config = {
 				}
 			},
 			{
-				test: /\.(css|sass)$/,
+				test: /\.(css|scss)$/,
 				use: [
-					MiniCssExtractPlugin.loader,
+					{
+						loader: MiniCssExtractPlugin.loader
+					},
 					'css-loader',
 					{
 						loader: 'postcss-loader',
@@ -45,7 +49,7 @@ const config = {
 			}
 		]
 	},
-	plugin: [
+	plugins: [
 		new MiniCssExtractPlugin( {
 			filename: 'admin.css'
 		} )
