@@ -25,6 +25,7 @@ class Settings extends Component {
 			select_option: '-1',
 			el_widget_list: [],
 			selected_widget: [],
+			notification: null,
 		}
 
 		this.el_widgets = [];
@@ -42,7 +43,9 @@ class Settings extends Component {
 
 		// Making array of object.
 		let { el_widget_list } = this.state
+
 		Object.keys( ewm_widgets ).map( ( value,index ) => {
+
 			el_widget_list[index] = {
 				title: ewm_widgets[value],
 				slug: value,
@@ -55,16 +58,21 @@ class Settings extends Component {
 
 		// Getting data from setting model api.
 		wp.api.loadPromise.then( () => {
+
 			this.widget = new wp.api.models.Settings();
 
 			if( ! this.state.isAPILoaded ) {
+
 				this.widget.fetch().then( response => {
+
 					console.log( response );
 
 					let { el_widget_list } = this.state;
 
 					Object.keys( this.state.el_widget_list ).map( ( index ) => {
+
 						if ( response.ewm_widget.some( (val) => val === this.state.el_widget_list[index].slug ) ) {
+
 							el_widget_list[index].status = ! this.state.el_widget_list[index].status
 							this.el_widgets.push( this.state.el_widget_list[index].slug );
 						}
@@ -82,11 +90,14 @@ class Settings extends Component {
 	selectCheckbox( e, index ) {
 		
 		let { selected_widget } = this.state;
+
 		// Select those which are checked.
 		if( e.target.checked ) {
-			this.state.selected_widget.push( this.state.el_widget_list[index] );
+
+			this.state.selected_widget.push( this.state.el_widget_list[index].slug );
 		} else {
-			let itemIndex = this.state.selected_widget.indexOf( this.state.el_widget_list[index] );
+
+			let itemIndex = this.state.selected_widget.indexOf( this.state.el_widget_list[index].slug );
 			this.state.selected_widget.splice( itemIndex, 1 );
 		}
 
@@ -97,8 +108,23 @@ class Settings extends Component {
 
 
 	// Selecting particular option from select.
-	selectChange( e ) {
+	selectOption( e ) {
+
 		this.setState( { select_option: e.target.value } );
+	}
+
+
+
+	// Selecting all the wigdets.
+	selectAll( e ) {
+
+		if( e.target.checked ) {
+
+			this.setState( { selected_widget: this.state.el_widget_list } );
+		} else {
+
+			this.setState( { selected_widget: [] } );
+		}
 	}
 
 
@@ -114,9 +140,11 @@ class Settings extends Component {
 		} );
 
 		model.save().then( ( response ) => {
+
 			console.log( response );
 
 			if ( 'success' == status ) {
+
 				this.setState( { isAPISaving: false } );
 			}
 		} )
@@ -124,29 +152,60 @@ class Settings extends Component {
 
 
 
+	// Changes after clicking the apply button.
 	selectApply() {
 
-		let { el_widget_list } = this.state;
+		if( '-1' != this.state.select_option ) {
 
-		if( 'activate' == this.state.select_option ) {
+			let { el_widget_list } = this.state;
+
 			if( this.state.selected_widget.length != 0 ) {
-				Object.keys( this.state.selected_widget ).map( ( index ) => {
-					if ( ! this.state.selected_widget[index].status ) {
-						el_widget_list[index].status = ! el_widget_list[index].status;
 
-						let itemIndex = this.el_widgets.indexOf( this.state.el_widget_list[index].slug );
-						this.el_widgets.splice( itemIndex, 1 );
-					}
-				})
+				if( 'activate' == this.state.select_option ) {
+
+					Object.keys( this.state.el_widget_list ).map( ( index ) => {
+
+						if ( this.state.selected_widget.some( (val) => val === this.state.el_widget_list[index].slug ) && ! this.state.el_widget_list[index].status ) {
+							el_widget_list[index].status = ! el_widget_list[index].status;
+
+							let itemIndex = this.el_widgets.indexOf( this.state.el_widget_list[index].slug );
+							this.el_widgets.splice( itemIndex, 1 );
+						}
+					})
+				} else if( 'deactive' == this.state.select_option ) {
+
+					Object.keys( this.state.el_widget_list ).map( ( index ) => {
+
+						if ( this.state.selected_widget.some( (val) => val === this.state.el_widget_list[index].slug ) && this.state.el_widget_list[index].status ) {
+							el_widget_list[index].status = ! el_widget_list[index].status;
+
+							this.el_widgets.push( this.state.el_widget_list[index].slug );
+						}
+					})
+				}
+	
+				// To uncheck all the selection after applying the bulk action.
+				this.setState( { selected_widget: [] } );
+
+				// To select the default option bulk action.
+				this.setState( { select_option: '-1' } );
+
+				// Again upadating the state.
+				this.setState( { el_widget_list } );
+
+				// Passing the updated blacklist widget to settings api.
+				this.changeOptions( 'ewm_widget', this.el_widgets);
 			} else {
-				alert( 'choose atleast one widget' );
+
+				// To select the default option bulk action.
+				this.setState( { select_option: '-1' } );
+
+				alert( 'choose atleast one option' );
 			}
 		} else {
-			console.log( 'sad' );
-			
-		}
 
-		this.setState( { el_widget_list } );
+			alert( 'need to choose other options' );
+		}
 	}
 
 
@@ -161,8 +220,10 @@ class Settings extends Component {
 
 		// If the status is false then push otherwise pop.
 		if( ! this.state.el_widget_list[index].status ) {
+
 			this.el_widgets.push( this.state.el_widget_list[index].slug ); 
 		} else {
+
 			let itemIndex = this.el_widgets.indexOf( this.state.el_widget_list[index].slug );
 			this.el_widgets.splice( itemIndex, 1 );
 		}
@@ -173,8 +234,32 @@ class Settings extends Component {
 
 
 
+	// Handling the notification for state updating.
+	addNotification( message, status ) {
+		const notification = store.addNotification({
+			message: message,
+			slidingEnter: {
+				duration: 0,
+				delay: 0
+			},
+            type: status,                            // 'default', 'success', 'info', 'warning'
+            container: 'bottom-left',                // where to position the notifications
+            animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
+            animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
+            dismiss: {
+			  duration: 2000,
+			  showIcon: true,
+			},
+		})
+		
+		this.setState( { notification } );
+	}
+
+
+
 	render() {
 		if( ! this.state.isAPILoaded ) {
+
 			return (
 				<Placeholder>
 					<Spinner />
@@ -184,6 +269,8 @@ class Settings extends Component {
 
 		return(
 			<Fragment>
+				<ReactNotification />
+
 				<header class="ewm-setting-header">
 					<div class="ewm-setting-title">
 						<h1>{ __( 'Elementor Widget Manager' ) }</h1>
@@ -193,11 +280,11 @@ class Settings extends Component {
 				<Panel className="ewm-setting-container">
 					<div className="ewm-select-options-container">
 						<div className="ewm-select-options-container-checkbox">
-							<input type='checkbox' className="ewm-select-options-checkbox" />
+							<input type='checkbox' className="ewm-select-options-checkbox"  onChange={ ( e ) => this.selectAll( e ) } />
 						</div>
 
 						<div className="ewm-select-options-container-select">
-							<select value={ this.state.select_option } onChange={ ( e ) => this.selectChange( e ) }>
+							<select value={ this.state.select_option } onChange={ ( e ) => this.selectOption( e ) }>
 								<option value="-1">{ __( 'Bulk Actions' ) }</option>
 								<option value="activate">{ __( 'Activate' ) }</option>
 								<option value="deactive">{ __( 'Deactivate' ) }</option>

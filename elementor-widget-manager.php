@@ -275,8 +275,7 @@ final class Elementor_Widget_Manager {
 			$elementor->widgets_manager->unregister_widget_type( $widget );
 		}
 
-		ksort( $this->widgets );
-		ksort( $widgets );
+		asort( $this->widgets );
 
 		$this->widgets = array_merge( $this->widgets, $widgets );
 	}
@@ -312,6 +311,8 @@ final class Elementor_Widget_Manager {
 		if ( isset( $widgets['common'] ) ) {
 			unset( $widgets['common'] );
 		}
+
+		asort( $widgets );
 
 		return $widgets;
 	}
