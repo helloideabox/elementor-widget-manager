@@ -24,10 +24,10 @@ class Settings extends Component {
 			isAPISaving: false,
 			select_option: '-1',
 			el_widget_list: [],
+			selected_widget: [],
 		}
 
 		this.el_widgets = [];
-		this.selected_widget = [];
 
 		this.changeStatus = this.changeStatus.bind( this );
 		this.changeOptions = this.changeOptions.bind( this );
@@ -81,14 +81,17 @@ class Settings extends Component {
 	// Selected elements pushed into new array.
 	selectCheckbox( e, index ) {
 		
+		let { selected_widget } = this.state;
 		// Select those which are checked.
 		if( e.target.checked ) {
-			this.selected_widget.push( this.state.el_widget_list[index].slug );
+			this.state.selected_widget.push( this.state.el_widget_list[index] );
 		} else {
-			let itemIndex = this.selected_widget.indexOf( this.state.el_widget_list[index].slug );
-			this.selected_widget.splice( itemIndex, 1 );
+			let itemIndex = this.state.selected_widget.indexOf( this.state.el_widget_list[index] );
+			this.state.selected_widget.splice( itemIndex, 1 );
 		}
-		console.log( this.selected_widget );
+
+		this.setState( { selected_widget } );
+		console.log( this.state.selected_widget );
 	}
 
 
@@ -126,16 +129,21 @@ class Settings extends Component {
 		let { el_widget_list } = this.state;
 
 		if( 'activate' == this.state.select_option ) {
-			Object.keys( this.state.el_widget_list ).map( ( index ) => {
-				if ( this.selected_widget.some( (val) => val === this.state.el_widget_list[index].slug ) && ! this.state.el_widget_list[index].status ) {
-					el_widget_list[index].status = ! el_widget_list[index].status;
+			if( this.state.selected_widget.length != 0 ) {
+				Object.keys( this.state.selected_widget ).map( ( index ) => {
+					if ( ! this.state.selected_widget[index].status ) {
+						el_widget_list[index].status = ! el_widget_list[index].status;
 
-					let itemIndex = this.el_widgets.indexOf( this.state.el_widget_list[index].slug );
-					this.el_widgets.splice( itemIndex, 1 );
-				}
-			})
+						let itemIndex = this.el_widgets.indexOf( this.state.el_widget_list[index].slug );
+						this.el_widgets.splice( itemIndex, 1 );
+					}
+				})
+			} else {
+				alert( 'choose atleast one widget' );
+			}
 		} else {
 			console.log( 'sad' );
+			
 		}
 
 		this.setState( { el_widget_list } );
@@ -208,7 +216,12 @@ class Settings extends Component {
 									return (
 										<li className={ "ewm-setting-list-item " + (this.state.el_widget_list[index].status? 'deactivate':'activate' ) }>
 											<div className="ewm-setting-list-item-container-checkbox">
-												<input type='checkbox' className="ewm-setting-list-item-checkbox" onClick={ ( e ) => this.selectCheckbox( e, index ) } />
+												<input 
+													type='checkbox'
+													className="ewm-setting-list-item-checkbox"
+													onChange={ ( e ) => this.selectCheckbox( e, index ) }
+													checked={ this.state.selected_widget.some( (val) => val === this.state.el_widget_list[index].slug ) }
+												/>
 											</div>
 
 											<div className="ewm-setting-list-item-container-title">

@@ -47,6 +47,15 @@ final class Elementor_Widget_Manager {
 	const MINIMUM_PHP_VERSION = '7.0';
 
 	/**
+	 * Global Javascript variable.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array Getting all the widgets for react.
+	 */
+	public $widgets = array();
+
+	/**
 	 * Instance
 	 *
 	 * @since 1.0.0
@@ -86,9 +95,11 @@ final class Elementor_Widget_Manager {
 	 * @access public
 	 */
 	public function __construct() {
+
 		add_action( 'init', array( $this, 'i18n' ) );
+
+		// Action to see if conditions are met as plugin is loaded.
 		add_action( 'plugins_loaded', array( $this, 'init' ) );
-		add_action( 'admin_footer', array( $this, 'get_registered_widgets' ) );
 	}
 
 	/**
@@ -142,6 +153,7 @@ final class Elementor_Widget_Manager {
 
 		// Add Plugin action.
 		$this->init_plugin();
+		add_action( 'elementor/init', array( $this, 'elementor_init' ), 50 );
 	}
 
 	/**
@@ -236,6 +248,39 @@ final class Elementor_Widget_Manager {
 
 	}
 
+
+	/**
+	 * Unregister Widget.
+	 *
+	 * Unregistering the selected widget.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @access public
+	 */
+	public function elementor_init() {
+		$widgets = $this->get_registered_widgets();
+
+		$selected_widgets = get_option( 'ewm_widget' );
+
+		$elementor = Elementor\Plugin::instance();
+
+		$this->widgets = array();
+
+		foreach ( $selected_widgets as $widget ) {
+			if ( ! isset( $widgets[ $widget ] ) ) {
+				continue;
+			}
+			$this->widgets[ $widget ] = $widgets[ $widget ];
+			$elementor->widgets_manager->unregister_widget_type( $widget );
+		}
+
+		ksort( $this->widgets );
+		ksort( $widgets );
+
+		$this->widgets = array_merge( $this->widgets, $widgets );
+	}
+
 	/**
 	 * Elementer Registered Widget.
 	 *
@@ -248,18 +293,17 @@ final class Elementor_Widget_Manager {
 	public function get_registered_widgets() {
 		$elementor = Elementor\Plugin::instance();
 
+		// Fetching all the widget types names and its properties.
 		$types = $elementor->widgets_manager->get_widget_types();
 
 		$categories = $this->get_categories();
-
-		//$elementor->widgets_manager->unregister_widget_type('heading');
 
 		$widgets = array();
 
 		foreach ( $types as $type ) {
 			$widget_cat = $type->get_categories();
 
-			if ( ! in_array( $widget_cat[0], $categories ) ) {
+			if ( ! in_array( $widget_cat[0], $categories, true ) ) {
 				continue;
 			}
 			$widgets[ $type->get_name() ] = $type->get_title();
@@ -272,6 +316,15 @@ final class Elementor_Widget_Manager {
 		return $widgets;
 	}
 
+	/**
+	 * Categories Function.
+	 *
+	 * Getting Categories to compare with Elementor categories.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @access public
+	 */
 	public function get_categories() {
 		return array(
 			'basic',
@@ -279,7 +332,7 @@ final class Elementor_Widget_Manager {
 			'general',
 			'theme-elements',
 			'woocommerce-elements',
-			'wordpress'
+			'wordpress',
 		);
 	}
 

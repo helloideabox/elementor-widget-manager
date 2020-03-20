@@ -20,15 +20,13 @@ class  Widget_Manager_Loader {
 	public function __construct() {
 
 		// Enqueue style and script.
-		add_action( 'admin_enqueue_scripts', array( $this, 'register_script' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'register_script' ), 999 );
 
 		// Action to register setting for get_option function.
 		add_action( 'init', array( $this, 'register_plugin_settings' ) );
 
 		// Adding widget manager option to elementor.
 		add_action( 'admin_menu', array( $this, 'register_widget_manager_menu' ), 700 );
-
-		add_action( 'elementor/widgets/widgets_registered', array( $this, 'unregister_elementor_widget' ) );
 	}
 
 	/**
@@ -44,9 +42,8 @@ class  Widget_Manager_Loader {
 			wp_enqueue_style( 'ewm-style', EL_WIDGET_MANAGER_URL . 'build/admin.css', array( 'wp-components' ), EL_WIDGET_MANAGER_VERSION, false );
 			wp_enqueue_script( 'ewm-script', EL_WIDGET_MANAGER_URL . 'build/admin.js', array( 'wp-components', 'wp-element', 'wp-api', 'wp-i18n' ), EL_WIDGET_MANAGER_VERSION, true );
 
-			// Calling elementor widget manager class.
-			$widgets = Elementor_Widget_Manager::instance()->get_registered_widgets();
-			wp_localize_script( 'ewm-script', 'ewm_widgets', $widgets );
+			// Calling elementor widget manager class with its public variable.
+			wp_localize_script( 'ewm-script', 'ewm_widgets', Elementor_Widget_Manager::instance()->widgets );
 		}
 	}
 
@@ -98,19 +95,6 @@ class  Widget_Manager_Loader {
 				'default'      => array(),
 			)
 		);
-	}
-
-	/**
-	 * Unregistering elementor widget settings.
-	 *
-	 * @return void
-	 */
-	public function unregister_elementor_widget( $widgets_manager ) {
-		$elementor_widget_blacklist = get_option( 'ewm_widget' );
-
-		$widgets_manager->unregister_widget_type('heading');
-
-		//print_r( $elementor_widget_blacklist );
 	}
 }
 
