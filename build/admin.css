@@ -4,6 +4,9 @@
 ul, li {
   list-style: none; }
 
+.notice {
+  display: none; }
+
 button:hover {
   cursor: pointer; }
 
@@ -97,8 +100,11 @@ button:hover {
       .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-button .ewm-setting-list-button:hover {
         cursor: pointer; }
 
-.notice {
-  display: none; }
+.ewm-empty-search {
+  text-align: center;
+  border-top: 1px solid #e2e4e7; }
+  .ewm-empty-search p {
+    font-size: 30px; }
 
 @media screen and (max-width: 782px) {
   .auto-fold #wpcontent {

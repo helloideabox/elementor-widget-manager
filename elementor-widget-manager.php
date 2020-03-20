@@ -263,21 +263,21 @@ final class Elementor_Widget_Manager {
 
 		$selected_widgets = get_option( 'ewm_widget' );
 
-		$elementor = Elementor\Plugin::instance();
+		if ( ! empty( $selected_widgets ) ) {
 
-		$this->widgets = array();
+			$elementor = Elementor\Plugin::instance();
 
-		foreach ( $selected_widgets as $widget ) {
-			if ( ! isset( $widgets[ $widget ] ) ) {
-				continue;
+			$this->widgets = array();
+
+			foreach ( $selected_widgets as $widget ) {
+				if ( ! isset( $widgets[ $widget ] ) ) {
+					continue;
+				}
+				// $this->widgets[ $widget ] = $widgets[ $widget ];
+				$elementor->widgets_manager->unregister_widget_type( $widget );
 			}
-			$this->widgets[ $widget ] = $widgets[ $widget ];
-			$elementor->widgets_manager->unregister_widget_type( $widget );
 		}
-
-		asort( $this->widgets );
-
-		$this->widgets = array_merge( $this->widgets, $widgets );
+		$this->widgets = $widgets;
 	}
 
 	/**

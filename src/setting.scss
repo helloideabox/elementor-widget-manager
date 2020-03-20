@@ -6,6 +6,10 @@ ul, li{
 	list-style: none;
 }
 
+.notice{
+	display: none;
+}
+
 button:hover{
 	cursor: pointer;
 }
@@ -146,8 +150,13 @@ button:hover{
 	}
 }
 
-.notice{
-	display: none;
+.ewm-empty-search{
+	text-align: center;
+	border-top: 1px solid #e2e4e7;
+
+	p{
+		font-size: 30px;
+	}
 }
 
 @media screen and (max-width: 782px){

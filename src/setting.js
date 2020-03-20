@@ -102,18 +102,23 @@ class Settings extends Component {
 	// Renders search result.
 	searchResult( e ) {
 
-		this.setState( { el_widget_list: [] } )
-		let { el_widget_list } = this.state,i=0;
 		this.setState( { search: e.target.value } );
+		let { el_widget_list } = this.state,i=0;
 
-		console.log( 'LIST= ' );
-		Object.keys( this.search_widget ).map( ( index ) => {
-			if( this.search_widget[index].title.toUpperCase().indexOf( e.target.value.toUpperCase() ) > -1 ) {
-				console.log( el_widget_list[index] );
-				el_widget_list[i] = this.state.search_widget[index];
-				i++;
-			}
-		});
+		if( '' != e.target.value ) {
+			
+			el_widget_list = [];
+
+			Object.keys( this.search_widget ).map( ( index ) => {
+				if( this.search_widget[index].title.toUpperCase().indexOf( e.target.value.toUpperCase() ) > -1 ) {
+
+					el_widget_list.push( this.search_widget[index] );
+				}
+			});
+		} else {
+
+			el_widget_list = this.search_widget;
+		}
 
 		this.setState( { el_widget_list } );
 	}
@@ -348,41 +353,45 @@ class Settings extends Component {
 								disabled={ this.state.isAPISaving }
 								class="ewm-select-options-searchbox"
 								value={ this.state.search }
-								placeholder={ __( 'Title' ) }
+								placeholder={ __( 'Search Widget' ) }
 								onChange={ ( e ) => this.searchResult( e ) }
 							/>
 						</div>
 					</div>
 
 					<PanelRow>
-						<ul className="ewm-setting-list">
-							{
-								Object.keys( this.state.el_widget_list ).map( ( index ) => {
-									return (
-										<li className={ "ewm-setting-list-item " + (this.state.el_widget_list[index].status? 'deactivate':'activate' ) }>
-											<div className="ewm-setting-list-item-container-checkbox">
-												<input 
-													type='checkbox'
-													className="ewm-setting-list-item-checkbox"
-													onChange={ ( e ) => this.selectCheckbox( e, index ) }
-													checked={ this.state.selected_widget.some( (val) => val === this.state.el_widget_list[index].slug ) }
-												/>
-											</div>
+						{
+							this.state.el_widget_list != ''?
+								<ul className="ewm-setting-list">
+									{
+										Object.keys( this.state.el_widget_list ).map( ( index ) => {
+											return (
+												<li className={ "ewm-setting-list-item " + (this.state.el_widget_list[index].status? 'deactivate':'activate' ) }>
+													<div className="ewm-setting-list-item-container-checkbox">
+														<input 
+															type='checkbox'
+															className="ewm-setting-list-item-checkbox"
+															onChange={ ( e ) => this.selectCheckbox( e, index ) }
+															checked={ this.state.selected_widget.some( (val) => val === this.state.el_widget_list[index].slug ) }
+														/>
+													</div>
 
-											<div className="ewm-setting-list-item-container-title">
-												<h4>{ __( this.state.el_widget_list[index].title ) }</h4>
-											</div>
+													<div className="ewm-setting-list-item-container-title">
+														<h4>{ __( this.state.el_widget_list[index].title ) }</h4>
+													</div>
 
-											<div className="ewm-setting-list-item-container-button">
-												<button id={ 'item-' + index } onClick={ () => this.changeStatus( index ) } className="ewm-setting-list-button">
-													{ this.state.el_widget_list[index].status? __( 'Deactivate' ):__( 'Activate' ) }
-												</button>
-											</div>
-										</li>
-									)
-								})
-							}
-						</ul>
+													<div className="ewm-setting-list-item-container-button">
+														<button id={ 'item-' + index } onClick={ () => this.changeStatus( index ) } className="ewm-setting-list-button">
+															{ this.state.el_widget_list[index].status? __( 'Deactivate' ):__( 'Activate' ) }
+														</button>
+													</div>
+												</li>
+											)
+										})
+									}
+								</ul>
+							:	<div className="ewm-empty-search"><p>{ __( 'Oops! Nothing Found' ) }</p></div>
+						}
 					</PanelRow>
 				</Panel>
 			</Fragment>
