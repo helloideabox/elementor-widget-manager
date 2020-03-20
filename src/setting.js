@@ -1,5 +1,11 @@
 import './setting.scss';
+import ReactNotification, { store } from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 
+
+/**
+ * WordPress dependencies
+ */
 const { __ } = wp.i18n;
 
 const {
@@ -16,7 +22,9 @@ const {
 
 
 class Settings extends Component {
+
 	constructor( props ) {
+	
 		super( props );
 
 		this.state = {
@@ -25,10 +33,13 @@ class Settings extends Component {
 			select_option: '-1',
 			el_widget_list: [],
 			selected_widget: [],
+			search: '',
 			notification: null,
+			
 		}
 
 		this.el_widgets = [];
+		this.search_widget = [];
 
 		this.changeStatus = this.changeStatus.bind( this );
 		this.changeOptions = this.changeOptions.bind( this );
@@ -54,7 +65,7 @@ class Settings extends Component {
 		} );
 
 		this.setState( { el_widget_list } );
-
+		this.search_widget = this.state.el_widget_list;
 
 		// Getting data from setting model api.
 		wp.api.loadPromise.then( () => {
@@ -86,6 +97,31 @@ class Settings extends Component {
 
 
 
+
+
+	// Renders search result.
+	searchResult( e ) {
+
+		this.setState( { el_widget_list: [] } )
+		let { el_widget_list } = this.state,i=0;
+		this.setState( { search: e.target.value } );
+
+		console.log( 'LIST= ' );
+		Object.keys( this.search_widget ).map( ( index ) => {
+			if( this.search_widget[index].title.toUpperCase().indexOf( e.target.value.toUpperCase() ) > -1 ) {
+				console.log( el_widget_list[index] );
+				el_widget_list[i] = this.state.search_widget[index];
+				i++;
+			}
+		});
+
+		this.setState( { el_widget_list } );
+	}
+
+
+
+
+
 	// Selected elements pushed into new array.
 	selectCheckbox( e, index ) {
 		
@@ -94,11 +130,11 @@ class Settings extends Component {
 		// Select those which are checked.
 		if( e.target.checked ) {
 
-			this.state.selected_widget.push( this.state.el_widget_list[index].slug );
+			selected_widget.push( this.state.el_widget_list[index].slug );
 		} else {
 
 			let itemIndex = this.state.selected_widget.indexOf( this.state.el_widget_list[index].slug );
-			this.state.selected_widget.splice( itemIndex, 1 );
+			selected_widget.splice( itemIndex, 1 );
 		}
 
 		this.setState( { selected_widget } );
@@ -118,9 +154,17 @@ class Settings extends Component {
 	// Selecting all the wigdets.
 	selectAll( e ) {
 
+		let { selected_widget } = this.state;
+
 		if( e.target.checked ) {
 
-			this.setState( { selected_widget: this.state.el_widget_list } );
+			Object.keys( this.state.el_widget_list ).map( ( index ) => {
+
+				selected_widget.push( this.state.el_widget_list[index].slug );
+			});			
+
+			this.setState( { selected_widget } );
+
 		} else {
 
 			this.setState( { selected_widget: [] } );
@@ -130,7 +174,7 @@ class Settings extends Component {
 
 
 
-	// For saving the setting in the setting api.
+	// For saving the setting changes in the setting api.
 	changeOptions( option, value ) {
 
 		this.setState( { isAPISaving: true } );
@@ -139,12 +183,14 @@ class Settings extends Component {
 			[option]: value
 		} );
 
-		model.save().then( ( response ) => {
+		model.save().then( ( response,status ) => {
 
+			store.removeNotification( this.state.notification );
 			console.log( response );
 
 			if ( 'success' == status ) {
 
+				this.addNotification( __( 'Settings Saved' ), 'success' );
 				this.setState( { isAPISaving: false } );
 			}
 		} )
@@ -172,6 +218,8 @@ class Settings extends Component {
 							this.el_widgets.splice( itemIndex, 1 );
 						}
 					})
+					this.addNotification( __( 'Activating Widget...' ), 'info' );
+
 				} else if( 'deactive' == this.state.select_option ) {
 
 					Object.keys( this.state.el_widget_list ).map( ( index ) => {
@@ -182,6 +230,7 @@ class Settings extends Component {
 							this.el_widgets.push( this.state.el_widget_list[index].slug );
 						}
 					})
+					this.addNotification( __( 'Deactivating Widget...' ), 'info' );
 				}
 	
 				// To uncheck all the selection after applying the bulk action.
@@ -200,11 +249,11 @@ class Settings extends Component {
 				// To select the default option bulk action.
 				this.setState( { select_option: '-1' } );
 
-				alert( 'choose atleast one option' );
+				this.addNotification( __( 'Choose atleast One Option' ), 'warning' );
 			}
 		} else {
 
-			alert( 'need to choose other options' );
+			this.addNotification( __( 'Need to Choose Other Options' ), 'warning' );
 		}
 	}
 
@@ -221,9 +270,11 @@ class Settings extends Component {
 		// If the status is false then push otherwise pop.
 		if( ! this.state.el_widget_list[index].status ) {
 
+			this.addNotification( __( 'Deactivating Widget...' ), 'info' );
 			this.el_widgets.push( this.state.el_widget_list[index].slug ); 
 		} else {
 
+			this.addNotification( __( 'Activating Widget...' ), 'info' );
 			let itemIndex = this.el_widgets.indexOf( this.state.el_widget_list[index].slug );
 			this.el_widgets.splice( itemIndex, 1 );
 		}
@@ -238,10 +289,6 @@ class Settings extends Component {
 	addNotification( message, status ) {
 		const notification = store.addNotification({
 			message: message,
-			slidingEnter: {
-				duration: 0,
-				delay: 0
-			},
             type: status,                            // 'default', 'success', 'info', 'warning'
             container: 'bottom-left',                // where to position the notifications
             animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
@@ -293,6 +340,17 @@ class Settings extends Component {
 
 						<div className="ewm-select-options-container-button">
 							<button className="button" onClick={ this.selectApply }>{ __( 'Apply' ) }</button>
+						</div>
+
+						<div class="ewm-select-options-container-search">
+							<input  
+								type="text"
+								disabled={ this.state.isAPISaving }
+								class="ewm-select-options-searchbox"
+								value={ this.state.search }
+								placeholder={ __( 'Title' ) }
+								onChange={ ( e ) => this.searchResult( e ) }
+							/>
 						</div>
 					</div>
 

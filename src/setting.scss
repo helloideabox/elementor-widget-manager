@@ -68,7 +68,7 @@ button:hover{
 	align-items: center;
 
 	.ewm-select-options-container-checkbox{
-		width: 7%;
+		width: 50px;
 		text-align: center;
 
 		input[type=checkbox]{
@@ -88,6 +88,11 @@ button:hover{
 			background-color: inherit;
 			width: 60px;
 		}
+	}
+
+	.ewm-select-options-container-search{
+		flex: 1;
+		text-align: right;
 	}
 }
 
@@ -114,7 +119,7 @@ button:hover{
 		}
 
 		.ewm-setting-list-item-container-checkbox{
-			width: 7%;
+			width: 50px;
 			text-align: center;
 		}
 
@@ -138,5 +143,15 @@ button:hover{
 				cursor: pointer;
 			}
 		}
+	}
+}
+
+.notice{
+	display: none;
+}
+
+@media screen and (max-width: 782px){
+	.auto-fold #wpcontent{
+		padding-left: 0;
 	}
 }
