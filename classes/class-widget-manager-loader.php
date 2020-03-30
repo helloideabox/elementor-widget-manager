@@ -43,7 +43,7 @@ class  Widget_Manager_Loader {
 			wp_enqueue_script( 'ewm-script', EL_WIDGET_MANAGER_URL . 'build/admin.js', array( 'wp-components', 'wp-element', 'wp-api', 'wp-i18n' ), EL_WIDGET_MANAGER_VERSION, true );
 
 			// Calling elementor widget manager class with its public variable.
-			wp_localize_script( 'ewm-script', 'ewm_widgets', Elementor_Widget_Manager::instance()->widgets );
+			wp_localize_script( 'ewm-script', 'ewm_widgets', Elementor_Widget_Manager::instance()->get_registered_widgets() );
 		}
 	}
 

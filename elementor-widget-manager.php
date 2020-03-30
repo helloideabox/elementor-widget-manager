@@ -20,14 +20,13 @@ define( 'EL_WIDGET_MANAGER_URL', plugin_dir_url( __FILE__ ) );
 define( 'EL_WIDGET_MANAGER_VERSION', '1.0.0' );
 
 /**
- * Main Elementor Widget Manager Class.
+ * Elementor Widget Manager class.
  *
  * The main class that initiates and runs the plugin.
  *
  * @since 1.0.0
  */
 final class Elementor_Widget_Manager {
-
 	/**
 	 * Minimum Elementor Version.
 	 *
@@ -47,7 +46,7 @@ final class Elementor_Widget_Manager {
 	const MINIMUM_PHP_VERSION = '7.0';
 
 	/**
-	 * Global Javascript variable.
+	 * Holds all registered Elementor's widgets.
 	 *
 	 * @since 1.0.0
 	 *
@@ -80,10 +79,10 @@ final class Elementor_Widget_Manager {
 	 * @return Elementor_Widget_Manager An instance of the class.
 	 */
 	public static function instance() {
-
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self(); // Self here denotes the class name.
 		}
+
 		return self::$instance;
 	}
 
@@ -95,7 +94,6 @@ final class Elementor_Widget_Manager {
 	 * @access public
 	 */
 	public function __construct() {
-
 		add_action( 'init', array( $this, 'i18n' ) );
 
 		// Action to see if conditions are met as plugin is loaded.
@@ -103,23 +101,24 @@ final class Elementor_Widget_Manager {
 	}
 
 	/**
-	 * Load Textdomain
+	 * i18n.
 	 *
-	 * Load Plugin Localization Files.
+	 * Load plugin localization files.
 	 *
 	 * Fired by `init` action hook.
 	 *
+	 * @uses load_plugin_textdomain
+	 *
 	 * @since 1.0.0
 	 *
-	 * @access public
+	 * @return void
 	 */
 	public function i18n() {
-
 		load_plugin_textdomain( 'el-widget-manager' );
 	}
 
 	/**
-	 * Initialize the plugin
+	 * Initialize the plugin.
 	 *
 	 * Load the plugin only after Elementor (and other plugins) are loaded.
 	 * Check for basic plugin requirements, if one check fail don't continue,
@@ -129,7 +128,7 @@ final class Elementor_Widget_Manager {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @access public
+	 * @return void
 	 */
 	public function init() {
 
@@ -151,9 +150,22 @@ final class Elementor_Widget_Manager {
 			return;
 		}
 
-		// Add Plugin action.
-		$this->init_plugin();
-		add_action( 'elementor/init', array( $this, 'elementor_init' ), 50 );
+		$this->includes();
+
+		add_action( 'elementor/widgets/widgets_registered', array( $this, 'unregister_widgets' ), 10 );
+	}
+
+	/**
+	 * Includes.
+	 *
+	 * Include required files.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function includes() {
+		require_once 'classes/class-widget-manager-loader.php';
 	}
 
 	/**
@@ -187,21 +199,19 @@ final class Elementor_Widget_Manager {
 	}
 
 	/**
-	 * Admin Notice
+	 * Admin Notice Minimum Elementor Version.
 	 *
-	 * Warning when site does not have minimum required Elementor version.
+	 * Warning when site does not meet minimum required Elementor version.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @access public
+	 * @return void
 	 */
 	public function admin_notice_minimum_elementor_version() {
-
-		// Checcking if current plugin is activated and then unset it.
+		// Check if current plugin is activated and then unset it.
 		if ( isset( $_GET['activate'] ) ) {
-
 			// Reset the variable.
-			unset ( $_GET['activate'] );
+			unset( $_GET['activate'] );
 		}
 
 		// Printing the message.
@@ -218,17 +228,16 @@ final class Elementor_Widget_Manager {
 	}
 
 	/**
-	 * Admin Notice
+	 * Admin Notice Minimum PHP version.
 	 *
-	 * Warning when site does not have minimum required Elementor version.
+	 * Warning when site does not meet minimum required PHP version.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @access public
+	 * @return void
 	 */
 	public function admin_notice_minimum_php_version() {
-
-		// Checcking if current plugin is activated and then unset it.
+		// Check if current plugin is activated and then unset it.
 		if ( isset( $_GET['activate'] ) ) {
 
 			// Reset the variable.
@@ -245,7 +254,6 @@ final class Elementor_Widget_Manager {
 		);
 
 		printf( '<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', $message );
-
 	}
 
 
@@ -256,40 +264,38 @@ final class Elementor_Widget_Manager {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @access public
+	 * @return void
 	 */
-	public function elementor_init() {
-		$widgets = $this->get_registered_widgets();
+	public function unregister_widgets() {
+		$elementor = Elementor\Plugin::instance();
+
+		if ( ! $elementor->editor->is_edit_mode() ) {
+			return;
+		}
 
 		$selected_widgets = get_option( 'ewm_widget' );
 
 		if ( ! empty( $selected_widgets ) ) {
-
-			$elementor = Elementor\Plugin::instance();
-
-			$this->widgets = array();
-
 			foreach ( $selected_widgets as $widget ) {
-				if ( ! isset( $widgets[ $widget ] ) ) {
-					continue;
-				}
-				// $this->widgets[ $widget ] = $widgets[ $widget ];
 				$elementor->widgets_manager->unregister_widget_type( $widget );
 			}
 		}
-		$this->widgets = $widgets;
 	}
 
 	/**
-	 * Elementer Registered Widget.
+	 * Get registered widgets.
 	 *
-	 * Getting Elemnter all registered widget.
+	 * Get all registered widgets of Elementor.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @access public
+	 * @return array
 	 */
 	public function get_registered_widgets() {
+		if ( ! empty( $this->widgets ) ) {
+			return $this->widgets;
+		}
+
 		$elementor = Elementor\Plugin::instance();
 
 		// Fetching all the widget types names and its properties.
@@ -314,6 +320,8 @@ final class Elementor_Widget_Manager {
 
 		asort( $widgets );
 
+		$this->widgets = $widgets;
+
 		return $widgets;
 	}
 
@@ -324,7 +332,7 @@ final class Elementor_Widget_Manager {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @access public
+	 * @return array
 	 */
 	public function get_categories() {
 		return array(
@@ -336,24 +344,6 @@ final class Elementor_Widget_Manager {
 			'wordpress',
 		);
 	}
-
-	/**
-	 * Include Files
-	 *
-	 * Including main files for plugin.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @access public
-	 */
-	public function init_plugin() {
-
-		// Including class loader.
-		require_once 'classes/class-widget-manager-loader.php';
-	}
-
 }
 
-
 Elementor_Widget_Manager::instance();
-
