@@ -6,6 +6,14 @@
 	display: none;
 }
 
+.notification-container-bottom-left{
+	bottom: 30px !important;
+}
+
+.notification-container-mobile-bottom{
+	bottom: 60px !important;
+}
+
 #ewm-setting-root {
 	.ewm-setting-header {
 		padding: 20px 10px;
@@ -54,11 +62,10 @@
 	
 		.ewm-select-options-container-button {
 			width: 15%;
-			height: 30px;
 	
 			button {
 				background-color: inherit;
-				width: 60px;
+				margin: 0;
 			}
 		}
 	
@@ -98,7 +105,6 @@
 			}
 	
 			.ewm-setting-list-item-container-button {
-				width: 23%;
 				text-align: center;
 	
 				.ewm-setting-list-button {
@@ -129,9 +135,6 @@
 	li {
 		&.activate {
 			border-left: 4px solid #f1f1f1;
-			&:hover {
-				background-color: aliceblue;
-			}
 		}
 		&.deactivate {
 			border-left: 4px solid #499bc8;
@@ -157,5 +160,33 @@
 @media screen and (max-width: 782px) {
 	.auto-fold #wpcontent {
 		padding-left: 0;
+	}
+
+	#ewm-setting-root {
+		.ewm-select-options-container {
+			display: block;
+			height: auto;
+
+			.ewm-select-options-container-checkbox{
+				display: inline-block;
+			}
+
+			.ewm-select-options-container-select{
+				width: auto;
+				display: inline-block;
+			}
+
+			.ewm-select-options-container-button{
+				display: inline-block;
+				width: auto;
+				margin-left: 10px;
+			}
+
+			.ewm-select-options-container-search{
+				text-align: left;
+				margin-left: 50px;
+				margin-top: 10px;
+			}
+		}
 	}
 }
