@@ -1,76 +1,55 @@
 #wpcontent {
   padding-left: 0; }
 
-ul, li {
-  list-style: none; }
-
 .notice {
   display: none; }
 
-button:hover {
-  cursor: pointer; }
-
-.activate {
-  border-left: 4px solid #f1f1f1; }
-
-.activate:hover {
-  background-color: aliceblue; }
-
-.deactivate {
-  border-left: 4px solid #499bc8;
-  background-color: aliceblue; }
-  .deactivate .ewm-setting-list-button {
-    color: #497e99 !important;
-    font-weight: 900; }
-
-.components-placeholder {
-  background: transparent;
-  margin-top: 25vh;
-  margin-bottom: 25vh; }
-
-.ewm-setting-header {
+#ewm-setting-root .ewm-setting-header {
   padding: 20px 10px;
   background-color: white;
-  box-shadow: 0px 1px 0px rgba(213, 213, 213, 0.5), 0px 1px 2px #eee; }
-  .ewm-setting-header .ewm-setting-title {
+  box-shadow: 0px 1px 0px rgba(213, 213, 213, 0.5), 0px 1px 2px #eee;
+  text-align: center; }
+  #ewm-setting-root .ewm-setting-header .ewm-setting-title {
     margin: 0px auto;
     max-width: 750px; }
-    .ewm-setting-header .ewm-setting-title h1 {
-      text-align: center; }
+    #ewm-setting-root .ewm-setting-header .ewm-setting-title h1 {
+      margin-top: 5px; }
+  #ewm-setting-root .ewm-setting-header p:last-of-type {
+    margin-bottom: 0; }
 
-.ewm-setting-container {
+#ewm-setting-root .ewm-setting-container {
   max-width: 750px;
   margin: auto;
   margin-top: 30px; }
-  .ewm-setting-container .components-panel__row {
+  #ewm-setting-root .ewm-setting-container .components-panel__row {
     margin-top: 0px;
     display: block; }
 
-.ewm-select-options-container {
+#ewm-setting-root .ewm-select-options-container {
   height: 40px;
   padding: 10px;
   display: flex;
   align-items: center; }
-  .ewm-select-options-container .ewm-select-options-container-checkbox {
+  #ewm-setting-root .ewm-select-options-container .ewm-select-options-container-checkbox {
     width: 50px;
     text-align: center; }
-    .ewm-select-options-container .ewm-select-options-container-checkbox input[type=checkbox] {
+    #ewm-setting-root .ewm-select-options-container .ewm-select-options-container-checkbox input[type=checkbox] {
       margin: 0; }
-  .ewm-select-options-container .ewm-select-options-container-select {
+  #ewm-setting-root .ewm-select-options-container .ewm-select-options-container-select {
     width: 17%; }
-  .ewm-select-options-container .ewm-select-options-container-button {
+  #ewm-setting-root .ewm-select-options-container .ewm-select-options-container-button {
     width: 15%;
     height: 30px; }
-    .ewm-select-options-container .ewm-select-options-container-button button {
+    #ewm-setting-root .ewm-select-options-container .ewm-select-options-container-button button {
       background-color: inherit;
       width: 60px; }
-  .ewm-select-options-container .ewm-select-options-container-search {
+  #ewm-setting-root .ewm-select-options-container .ewm-select-options-container-search {
     flex: 1;
     text-align: right; }
 
-.ewm-setting-list {
+#ewm-setting-root .ewm-setting-list {
   margin: 0; }
-  .ewm-setting-list .ewm-setting-list-item {
+  #ewm-setting-root .ewm-setting-list .ewm-setting-list-item {
     padding: 10px;
     height: 40px;
     display: flex;
@@ -78,33 +57,56 @@ button:hover {
     border-bottom: 1px solid #e2e4e7;
     border-top: 1px solid #e2e4e7;
     margin-bottom: 0; }
-    .ewm-setting-list .ewm-setting-list-item input[type=checkbox] {
+    #ewm-setting-root .ewm-setting-list .ewm-setting-list-item input[type=checkbox] {
       margin: 0; }
-    .ewm-setting-list .ewm-setting-list-item h4 {
+    #ewm-setting-root .ewm-setting-list .ewm-setting-list-item h4 {
       margin: 0;
       font-size: 15px; }
-    .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-checkbox {
+    #ewm-setting-root .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-checkbox {
       width: 50px;
       text-align: center; }
-    .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-title {
+    #ewm-setting-root .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-title {
       width: 70%; }
-    .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-button {
+    #ewm-setting-root .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-button {
       width: 23%;
       text-align: center; }
-      .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-button .ewm-setting-list-button {
+      #ewm-setting-root .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-button .ewm-setting-list-button {
         border: none;
         background-color: inherit;
         padding: 10px;
         color: #499bc8;
         width: 100px; }
-      .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-button .ewm-setting-list-button:hover {
+      #ewm-setting-root .ewm-setting-list .ewm-setting-list-item .ewm-setting-list-item-container-button .ewm-setting-list-button:hover {
         cursor: pointer; }
 
-.ewm-empty-search {
+#ewm-setting-root .ewm-empty-search {
   text-align: center;
   border-top: 1px solid #e2e4e7; }
-  .ewm-empty-search p {
+  #ewm-setting-root .ewm-empty-search p {
     font-size: 30px; }
+
+#ewm-setting-root ul {
+  list-style: none; }
+
+#ewm-setting-root li.activate {
+  border-left: 4px solid #f1f1f1; }
+  #ewm-setting-root li.activate:hover {
+    background-color: aliceblue; }
+
+#ewm-setting-root li.deactivate {
+  border-left: 4px solid #499bc8;
+  background-color: aliceblue; }
+  #ewm-setting-root li.deactivate .ewm-setting-list-button {
+    color: #497e99 !important;
+    font-weight: 900; }
+
+#ewm-setting-root button:hover {
+  cursor: pointer; }
+
+#ewm-setting-root .components-placeholder {
+  background: transparent;
+  margin-top: 25vh;
+  margin-bottom: 25vh; }
 
 @media screen and (max-width: 782px) {
   .auto-fold #wpcontent {

@@ -76,8 +76,6 @@ class Settings extends Component {
 
 				this.widget.fetch().then( response => {
 
-					console.log( response );
-
 					let { el_widget_list } = this.state;
 
 					Object.keys( this.state.el_widget_list ).map( ( index ) => {
@@ -325,7 +323,8 @@ class Settings extends Component {
 
 				<header class="ewm-setting-header">
 					<div class="ewm-setting-title">
-						<h1>{ __( 'Elementor Widget Manager' ) }</h1>
+						<h1>{ __( 'Elementor Widget Manager', 'el-widget-manager' ) }</h1>
+						<p>by <a href="https://ideabox.io" target="_blank">IdeaBox Creations</a></p>
 					</div>
 				</header>
 
