@@ -15,7 +15,7 @@ No. The widgets are removed/uregistered only from Elementor Builder interface.
 Deactivating the widgets will speed up the loading of Elementor builder interface and will consume lesser resources. 
 
 ## About Us 
-IdeaBox is an exclusive WP design and development agency with over 8 years of experience. We are the makers of 
+[IdeaBox](https://ideabox.io) is an exclusive WP design and development agency with over 8 years of experience. We are the makers of 
 1. [PowerPack for Elementor](https://powerpackelements.com)
 2. [Dashboard Welcome for Elementor](https://wordpress.org/plugins/dashboard-welcome-for-elementor/)
 3. [PowerPack for Beaver Builder](https://wpbeaveraddons.com)
