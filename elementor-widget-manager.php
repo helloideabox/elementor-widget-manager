@@ -152,7 +152,7 @@ final class Elementor_Widget_Manager {
 
 		$this->includes();
 
-		add_action( 'elementor/widgets/widgets_registered', array( $this, 'unregister_widgets' ), 10 );
+		add_action( 'elementor/widgets/widgets_registered', array( $this, 'unregister_widgets' ), 200 );
 	}
 
 	/**
