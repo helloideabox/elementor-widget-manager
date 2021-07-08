@@ -4,7 +4,7 @@
  * Plugin URI: https://ideabox.io/
  * Author: IdeaBox
  * Author URI: https://ideabox.io
- * Version: 1.0.0
+ * Version: 1.0.1
  * Description: A simple way to deactivate/activate Elementor widgets.
  * Text Domain: el-widget-manager
  *
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'EL_WIDGET_MANAGER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'EL_WIDGET_MANAGER_URL', plugin_dir_url( __FILE__ ) );
-define( 'EL_WIDGET_MANAGER_VERSION', '1.0.0' );
+define( 'EL_WIDGET_MANAGER_VERSION', '1.0.1' );
 
 /**
  * Elementor Widget Manager class.
@@ -152,7 +152,7 @@ final class Elementor_Widget_Manager {
 
 		$this->includes();
 
-		add_action( 'elementor/widgets/widgets_registered', array( $this, 'unregister_widgets' ), 10 );
+		add_action( 'elementor/widgets/widgets_registered', array( $this, 'unregister_widgets' ), 99 );
 	}
 
 	/**
@@ -306,11 +306,11 @@ final class Elementor_Widget_Manager {
 		$widgets = array();
 
 		foreach ( $types as $type ) {
-			$widget_cat = $type->get_categories();
+			// $widget_cat = $type->get_categories();
 
-			if ( ! in_array( $widget_cat[0], $categories, true ) ) {
-				continue;
-			}
+			// if ( ! in_array( $widget_cat[0], $categories, true ) ) {
+			// 	continue;
+			// }
 			$widgets[ $type->get_name() ] = $type->get_title();
 		}
 
