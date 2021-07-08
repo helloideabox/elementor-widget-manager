@@ -1,9 +1,10 @@
 {
 	"name": "ideabox/elementor-widget-manager",
 	"description": "",
+	"type": "wordpress-plugin",
     "authors": [
         {
-            "name": "IdeaBox",
+            "name": "IdeaBox Creations",
             "email": "hello@ideaboxcreatins.com"
         }
     ],
