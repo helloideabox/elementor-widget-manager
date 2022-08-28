@@ -152,7 +152,7 @@ final class Elementor_Widget_Manager {
 
 		$this->includes();
 
-		add_action( 'elementor/widgets/widgets_registered', array( $this, 'unregister_widgets' ), 99 );
+		add_action( 'elementor/widgets/register', array( $this, 'unregister_widgets' ), 99 );
 	}
 
 	/**
@@ -277,7 +277,7 @@ final class Elementor_Widget_Manager {
 
 		if ( ! empty( $selected_widgets ) ) {
 			foreach ( $selected_widgets as $widget ) {
-				$elementor->widgets_manager->unregister_widget_type( $widget );
+				$elementor->widgets_manager->unregister( $widget );
 			}
 		}
 	}
